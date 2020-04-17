@@ -2,6 +2,9 @@ package com.company;
 
 import BinaryTree.BinaryTree;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Scanner;
@@ -19,11 +22,14 @@ public class Main {
                     case "add":
                         value = in.nextLine();
                         current = in.nextBigInteger();
-                        tree.Add(value, current);
+                        tree.Add(current,value);
                         break;
                     case  "delete":
                         current = in.nextBigInteger();
                         tree.Delete(current);
+                        break;
+                    case  "deleteAll":
+                        tree.DeleteTree();
                         break;
                     case "print":
                         // maybe need to do PrintTree with tabs;
@@ -36,18 +42,32 @@ public class Main {
                         current = in.nextBigInteger();
                         tree.Find(current);
                         break;
-                    /*
+
                     case "read":
-                       //
+                        value = in.nextLine();
+                        try {
+                            BufferedReader bufferedReader = new BufferedReader(new FileReader(value));
+                            tree.ReadFromFile(bufferedReader);
+                        } catch (IOException e) {
+                            System.out.println("Error:" + e);
+                        }
                         break;
                     case "write":
-                        //
+                        value = in.nextLine();
+                        try {
+                            File file = new File(value);
+                            if(!file.exists()) {
+                                file.createNewFile();
+                            }
+                            tree.WriteFromFile(file);
+                        } catch (IOException e) {
+                            System.out.println("Error:" + e);
+                        }
                         break;
-                     */
                 }
             }
         }  catch (Exception e) {
-            System.out.println("Something do wrong");
+            System.out.println("Something do wrong:" + e);
         }
     }
 }

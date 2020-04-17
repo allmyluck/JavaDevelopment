@@ -1,9 +1,10 @@
 package BinaryTree;
+import java.io.*;
 import java.math.BigInteger;
 
 public class BinaryTree {
-    public BinaryTree(String value, BigInteger key) {
-        root = new TreeNode(value, key);
+    public BinaryTree(BigInteger key,String value) {
+        root = new TreeNode(key, value);
     }
 
 
@@ -12,10 +13,10 @@ public class BinaryTree {
     }
 
 
-    public void Add(String value, BigInteger key) {
+    public void Add(BigInteger key,String value) {
         //BinaryTree is empty;
         if(root == null) {
-            root = new TreeNode(value, key);
+            root = new TreeNode(key, value);
             return;
         }
         TreeNode current;
@@ -25,7 +26,7 @@ public class BinaryTree {
             return;
         }
         // if find place to insert;
-        TreeNode newNode = new TreeNode(value, key);
+        TreeNode newNode = new TreeNode(key,value);
         if(current.key.compareTo(key) < 0) {
             current.rightChild = newNode;
         } else {
@@ -76,14 +77,35 @@ public class BinaryTree {
         */
     }
 
+    public void DeleteTree() {
+        CleanTree(root);
+    }
 
-    // public BinaryTree ReadFromFile(maybe file) {
+     public void ReadFromFile(BufferedReader bf)  {
+        String key, value;
+        CleanTree(root);
+        try {
+            while((key = bf.readLine()) != null) {
+                value = bf.readLine();
+                BigInteger current = new BigInteger(key);
+                this.Add(current, value);
+            }
+        } catch (IOException e) {
+            CleanTree(root);
+            System.out.println("Error:" + e);
+        }
 
-    // }
+     }
 
-    // public BinaryTree WriteFromFile(maybe file) {
-
-    // }
+    public void WriteFromFile(File file) {
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            PrintInFile(printWriter,root);
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error:" + e);
+        }
+    }
 
     //private section;
     private TreeNode root;
@@ -99,6 +121,16 @@ public class BinaryTree {
         return node;
     }
 
+    private void PrintInFile(PrintWriter pw, TreeNode node) {
+        if(node != null) {
+            pw.println(node.key);
+            pw.println(node.value);
+            PrintInFile(pw, node.leftChild);
+            PrintInFile(pw, node.rightChild);
+        }
+    }
+
+
     private void Print(TreeNode node) {
         if(node != null) {
             System.out.println("key: " + node.key + ";value: " + node.value);
@@ -113,6 +145,14 @@ public class BinaryTree {
             System.out.println("key: " + node.key + ";value: " + node.value);
             PrintSort(node.rightChild);
         }
+    }
+
+    private  TreeNode CleanTree(TreeNode node) {
+        if(node != null) {
+            node.leftChild = CleanTree(node.leftChild);
+            node.rightChild = CleanTree(node.rightChild);
+        }
+        return null;
     }
 
     private  TreeNode DeleteRecursive(BigInteger key, TreeNode node) {
@@ -163,7 +203,7 @@ public class BinaryTree {
         private String value;
         private BigInteger key;
 
-        public TreeNode(String value, BigInteger key) {
+        public TreeNode(BigInteger key,String value) {
             leftChild = null;
             rightChild = null;
             this.value = value;
